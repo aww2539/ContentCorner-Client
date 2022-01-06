@@ -8,6 +8,7 @@ import { Home } from "./home/Home";
 import { CreatePost } from "./posts/CreatePost";
 import { EditPost } from "./posts/EditPost";
 import { Post } from "./posts/Post";
+import { PostSearch } from "./search/Post Search/PostSearch";
 import { Search } from "./search/Search";
 
 
@@ -28,6 +29,9 @@ export const ApplicationViews = () => {
             <Route exact path="/group/:groupId(\d+)/category/:categoryId(\d+)">
                 <Group />
             </Route>
+                <Route exact path="/group/:groupId(\d+)/search">
+                    <PostSearch />
+                </Route>
                 <Route exact path="/group/:groupId(\d+)/category/:categoryId(\d+)/post/:postId(\d+)">
                     <Post />
                 </Route>

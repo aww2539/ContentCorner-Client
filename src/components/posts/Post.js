@@ -9,11 +9,11 @@ import { createVote, getVotesByPostAndUser, getVotesByPostId, updateVote } from 
 
 
 export const Post = () => {
+    const [currentUser, setCurrentUser] = useState({})
     const [post, setPost] = useState({})
     const [group, setGroup] = useState({})
     const [categories, setCategories] = useState([])
     const [comments, setComments] = useState([])
-    const [currentUser, setCurrentUser] = useState({})
     const [members, setMembers] = useState([])
     const [memberCheck, setMemberCheck] = useState({})
     const [votes, setVotes] = useState([])
@@ -38,12 +38,12 @@ export const Post = () => {
 
     useEffect(() => {
         fetchGroup()
-    }, [groupId])
+    }, [groupId, currentUser])
 
     useEffect(() => {
         const foundMember = members.find(m => m.id === currentUser.user?.id)
         setMemberCheck(foundMember)
-    }, [members])
+    }, [members, currentUser])
 
     const fetchVotes = () => {
         getVotesByPostId(postId)
@@ -53,16 +53,16 @@ export const Post = () => {
     useEffect(() => {
         getPostById(postId)
         .then((data) => setPost(data))
-    }, [])
+    }, [currentUser])
 
     useEffect(() => {
         fetchComments()
-    }, [])
+    }, [currentUser])
 
     useEffect(() => {
         getAllCategories()
         .then((data) => setCategories(data))
-    }, [])
+    }, [currentUser])
 
     useEffect(() => {
         getCurrentUser()
@@ -162,6 +162,8 @@ export const Post = () => {
                         }}> Leave Group </button> 
                     }
 
+                    <Link to={`/group/${groupId}/search`}> <button> Search Posts </button> </Link>
+
                 </div>
             </div>
 
@@ -171,7 +173,7 @@ export const Post = () => {
                 <section className="group_menu">
 
                     {
-                        memberCheck === undefined ?
+                        memberCheck?.id != currentUser.user?.id ?
                         "" :
                         <Link to={`/group/${groupId}/category/${categoryId}/createPost`}><div className="groupMenu_cards"> Create Post! </div></Link>
                     }
@@ -203,7 +205,7 @@ export const Post = () => {
                     </section>
                     
                     {
-                        memberCheck === undefined ?
+                        memberCheck?.id != currentUser.user?.id ?
                         <div className="votes">
                             <p>Upvotes: {upvotes.length}</p>
 
@@ -233,7 +235,7 @@ export const Post = () => {
 
                     <section className="post_comments">
                     {
-                        memberCheck === undefined ?
+                        memberCheck?.id != currentUser.user?.id ?
 
                         "" :
                         <Link to={`/group/${groupId}/category/${categoryId}/post/${postId}/createComment`}><button> Create Comment </button></Link>

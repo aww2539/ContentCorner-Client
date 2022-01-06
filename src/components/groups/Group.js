@@ -7,13 +7,13 @@ import { getAllCategories, getCurrentUser } from "../ApiManager"
 
 
 export const Group = () => {
+    const [currentUser, setCurrentUser] = useState({})
     const [posts, setPosts] = useState([])
     const [group, setGroup] = useState({})
     const [categories, setCategories] = useState([])
     const [members, setMembers] = useState([])
     const [memberCheck, setMemberCheck] = useState({})
     const { groupId, categoryId } = useParams()
-    const [currentUser, setCurrentUser] = useState({})
 
 
     const fetchGroup = () => {
@@ -30,27 +30,28 @@ export const Group = () => {
     }
 
     useEffect(() => {
+        getCurrentUser()
+        .then((data) => setCurrentUser(data))
+    }, [])
+
+    useEffect(() => {
         fetchGroup()
-    }, [groupId])
+    }, [groupId, currentUser])
 
     useEffect(() => {
         const foundMember = members.find(m => m.id === currentUser.user?.id)
         setMemberCheck(foundMember)
-    }, [members])
+    }, [members, posts, currentUser])
 
     useEffect(() => {
         fetchPosts()
-    }, [categoryId])
+    }, [categoryId, currentUser])
 
     useEffect(() => {
         getAllCategories()
         .then((data) => setCategories(data))
     }, [])
 
-    useEffect(() => {
-        getCurrentUser()
-        .then((data) => setCurrentUser(data))
-    }, [])
 
     return (
         
@@ -67,7 +68,7 @@ export const Group = () => {
                     <Link to={`/`}> <button> Home </button> </Link>
 
                     {
-                        memberCheck === undefined ?
+                        memberCheck?.id != currentUser.user?.id ?
                         
                         <button onClick={() => {
                             joinGroup(groupId)
@@ -80,6 +81,8 @@ export const Group = () => {
                         }}> Leave Group </button> 
                     }
 
+                    <Link to={`/group/${groupId}/search`}> <button> Search Posts </button> </Link>
+
                 </div>
 
             
@@ -91,7 +94,7 @@ export const Group = () => {
                 <section className="group_menu">
 
                     {
-                        memberCheck === undefined ?
+                        memberCheck?.id != currentUser.user?.id ?
                         "" :
                         <Link to={`/group/${groupId}/category/${categoryId}/createPost`}><div className="groupMenu_cards"> Create Post! </div></Link>
                     }

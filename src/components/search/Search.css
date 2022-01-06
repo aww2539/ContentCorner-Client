@@ -1,0 +1,9 @@
+
+section.group_posts {
+    margin: 2rem;
+    padding: 1rem;
+    min-width: 1255px;
+    border: 5px solid black;
+    display: flex;
+    flex-direction: row;
+}
